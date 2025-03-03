@@ -4,17 +4,8 @@ import os
 import pygame
 import requests
 
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('coords')
-    parser.add_argument('scale')
-    args = parser.parse_args()
-    server_address = 'https://static-maps.yandex.ru/v1?'
-    api_key = 'f3a0fe3a-b07e-4840-a1da-06f18b2ddf13'
-    ll = args.coords
-    scale = args.scale
-
+def change_picture(server_address, ll, scale, api_key):
+    print('1')
     map_request = f"{server_address}"
     params = {'ll': ll, 'z': scale, 'apikey': api_key}
     response = requests.get(map_request, params=params)
@@ -33,6 +24,24 @@ def main():
 
     os.remove(map_file)
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('coords')
+    parser.add_argument('scale')
+    args = parser.parse_args()
+    server_address = 'https://static-maps.yandex.ru/v1?'
+    api_key = 'f3a0fe3a-b07e-4840-a1da-06f18b2ddf13'
+    ll = args.coords
+    scale = args.scale
+    running = True
+    while running:
+        for i in pygame.event.get():
+            if i == pygame.K_PAGEDOWN:
+                scale -= 1
+                change_picture(server_address, ll, scale, api_key)
+            elif i == pygame.K_PAGEUP:
+                scale += 1
+                change_picture(server_address, ll, scale, api_key)
 
 if __name__ == '__main__':
     main()
